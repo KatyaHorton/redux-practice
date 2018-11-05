@@ -104,6 +104,55 @@ const todos = (state = [], action) => {
   }
 };
 
+/* VISIBILITY FILTER */
+
+const visibilityFilter = (state = "SHOW_ALL", action) => {
+  switch (action.type) {
+    case "SET_VISIBILITY_FILTER":
+      return action.filter;
+    default:
+      return state;
+  }
+};
+
+/* Reducer composition pattern */
+
+const todoApp = (state = {}, action) => {
+  return {
+    todos: todos(state.todos, action),
+    visibilityFilter: visibilityFilter(state.visibilityFilter, action)
+  };
+};
+
+const storeTodo = createStore(todoApp);
+
+console.log("Initial state: ", storeTodo.getState());
+console.log("--------------------------------------");
+console.log("Dispatching ADD_TODO.");
+storeTodo.dispatch({
+  type: "ADD_TODO",
+  id: 0,
+  text: "Learn Redux"
+});
+console.log("Current state: ", storeTodo.getState());
+console.log("--------------------------------------");
+console.log("Dispatching ADD_TODO.");
+storeTodo.dispatch({
+  type: "ADD_TODO",
+  id: 1,
+  text: "Learn Redux"
+});
+console.log("Current state: ", storeTodo.getState());
+console.log("--------------------------------------");
+console.log("Dispatching ADD_TODO.");
+storeTodo.dispatch({
+  type: "ADD_TODO",
+  id: 2,
+  text: "Learn Redux"
+});
+console.log("Current state: ", storeTodo.getState());
+console.log("--------------------------------------");
+
 /* TESTS FOR TODOS APP */
 
 const testAddTodos = () => {
