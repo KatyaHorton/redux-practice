@@ -80,10 +80,24 @@ const todos = (state = [], action) => {
         }
       ];
 
+    case "TOGGLE_TODO":
+      return state.map(todo => {
+        if (todo.id !== action.id) {
+          return todo;
+        }
+
+        return {
+          ...todo,
+          completed: !todo.completed
+        };
+      });
+
     default:
       return state;
   }
 };
+
+/* TESTS FOR TODOS APP */
 
 const testAddTodos = () => {
   const stateBefore = [];
@@ -106,13 +120,52 @@ const testAddTodos = () => {
   expect(todos(stateBefore, action)).toEqual(stateAfter);
 };
 
-const toggleTodo = todo => {
+const testToggleTodo = () => {
+  const stateBefore = [
+    {
+      id: 0,
+      text: "Learn Redux",
+      completed: false
+    },
+    {
+      id: 1,
+      text: "Implement Redux",
+      completed: false
+    }
+  ];
+  const action = {
+    type: "TOGGLE_TODO",
+    id: 1
+  };
+
+  const stateAfter = [
+    {
+      id: 0,
+      text: "Learn Redux",
+      completed: false
+    },
+    {
+      id: 1,
+      text: "Implement Redux",
+      completed: true
+    }
+  ];
+
+  deepFreeze(stateBefore);
+  deepFreeze(action);
+
+  expect(todos(stateBefore, action)).toEqual(stateAfter);
+};
+
+const toggleTodoPractice = todo => {
   return Object.assign({}, todo, {
     completed: !todo.completed
   });
 };
 
-const testToggleTodo = () => {
+/* ToggleTodo */
+
+const testToggleTodoPractice = () => {
   const todoBefore = {
     id: 0,
     text: "Learn Redux",
@@ -124,16 +177,16 @@ const testToggleTodo = () => {
     completed: true
   };
 
-  expect(toggleTodo(todoBefore)).toEqual(todoAfter);
+  expect(toggleTodoPractice(todoBefore)).toEqual(todoAfter);
 };
 
 testAddTodos();
 testToggleTodo();
+testToggleTodoPractice();
 testAddCounter();
 testRemoveCounter();
 testIncrementCounter();
 console.log("All tests passed");
-console.log(deepFreeze);
 
 const store = createStore(counter);
 
