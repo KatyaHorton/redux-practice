@@ -1,28 +1,68 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+// var createStore = Redux.createStore;
+// ES6 destructuring syntax: const { createStore } = Redux;
+import { createStore } from "redux";
+import "./App.css";
+import expect from "expect";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+function counter(state = 0, action) {
+  console.log(action, state);
+  switch (action.type) {
+    case "INCREMENT":
+      console.log("+1");
+      return state + 1;
+    case "DECREMENT":
+      console.log("-1");
+      return state - 1;
+    default:
+      return state;
   }
 }
 
+const store = createStore(counter);
+
+// store.dispatch({ type: "INCREMENT" });
+//
+// console.log(store.getState());
+//
+// store.dispatch({ type: "INCREMENT" });
+//
+// console.log(store.getState());
+//
+// store.dispatch({ type: "INCREMENT" });
+//
+// console.log(store.getState());
+
+const Counter = ({ value, onIncrement, onDecrement }) => (
+  <div>
+    <h1>{value}</h1>
+    <button onClick={onIncrement}>+</button>
+    <button onClick={onDecrement}>-</button>
+  </div>
+);
+
+// class App extends Component {
+const App = () => (
+  <div className="App">
+    <Counter
+      value={store.getState()}
+      onIncrement={() => {
+        console.log("INCREMENT");
+        store.dispatch({
+          type: "INCREMENT"
+        });
+      }}
+      onDecrement={() => {
+        console.log("DECREMENT");
+        store.dispatch({
+          type: "DECREMENT"
+        });
+      }}
+    />
+  </div>
+);
+// }
+//
 export default App;
+
+store.subscribe(App);
