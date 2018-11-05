@@ -80,12 +80,10 @@ const todo = (state, action) => {
       if (state.id !== action.id) {
         return state;
       }
-
       return {
         ...state,
         completed: !state.completed
       };
-
     default:
       return state;
   }
@@ -98,7 +96,6 @@ const todos = (state = [], action) => {
 
     case "TOGGLE_TODO":
       return state.map(t => todo(t, action));
-
     default:
       return state;
   }
@@ -251,7 +248,21 @@ class TodoApp extends Component {
         </button>
         <ul>
           {this.props.todos.map(todo => (
-            <li key={todo.id}>{todo.text}</li>
+            <li
+              key={todo.id}
+              onClick={() => {
+                store.dispatch({
+                  type: "TOGGLE_TODO",
+                  id: todo.id
+                });
+                console.log("Clicked item: ", todo.completed);
+              }}
+              style={{
+                color: todo.completed ? "green" : "red"
+              }}
+            >
+              {todo.text}
+            </li>
           ))}
         </ul>
       </div>
