@@ -66,7 +66,70 @@ const incrementCounter = (list, index) => {
   return [...list.slice(0, index), list[index] + 1, ...list.slice(index + 1)];
 };
 
-testA ddCounter();
+/* ------------------- TODO LIST APP ------------------- */
+
+const todos = (state = [], action) => {
+  switch (action.type) {
+    case "ADD_TODO":
+      return [
+        ...state,
+        {
+          id: action.id,
+          text: action.text,
+          completed: false
+        }
+      ];
+
+    default:
+      return state;
+  }
+};
+
+const testAddTodos = () => {
+  const stateBefore = [];
+  const action = {
+    type: "ADD_TODO",
+    id: 0,
+    text: "Learn Redux"
+  };
+  const stateAfter = [
+    {
+      id: 0,
+      text: "Learn Redux",
+      completed: false
+    }
+  ];
+
+  deepFreeze(stateBefore);
+  deepFreeze(action);
+
+  expect(todos(stateBefore, action)).toEqual(stateAfter);
+};
+
+const toggleTodo = todo => {
+  return Object.assign({}, todo, {
+    completed: !todo.completed
+  });
+};
+
+const testToggleTodo = () => {
+  const todoBefore = {
+    id: 0,
+    text: "Learn Redux",
+    completed: false
+  };
+  const todoAfter = {
+    id: 0,
+    text: "Learn Redux",
+    completed: true
+  };
+
+  expect(toggleTodo(todoBefore)).toEqual(todoAfter);
+};
+
+testAddTodos();
+testToggleTodo();
+testAddCounter();
 testRemoveCounter();
 testIncrementCounter();
 console.log("All tests passed");
