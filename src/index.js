@@ -117,8 +117,6 @@ const visibilityFilter = (state = "SHOW_ALL", action) => {
 
 /* Reducer composition pattern */
 
-console.log(combineReducers);
-
 const todoApp = combineReducers({
   todos: todos,
   visibilityFilter: visibilityFilter
@@ -133,30 +131,6 @@ const todoApp = combineReducers({
 const store = createStore(todoApp);
 
 console.log("Initial state: ", store.getState());
-console.log("--------------------------------------");
-console.log("Dispatching ADD_TODO.");
-store.dispatch({
-  type: "ADD_TODO",
-  id: 0,
-  text: "Learn Redux"
-});
-console.log("Current state: ", store.getState());
-console.log("--------------------------------------");
-console.log("Dispatching ADD_TODO.");
-store.dispatch({
-  type: "ADD_TODO",
-  id: 1,
-  text: "Learn Redux"
-});
-console.log("Current state: ", store.getState());
-console.log("--------------------------------------");
-console.log("Dispatching ADD_TODO.");
-store.dispatch({
-  type: "ADD_TODO",
-  id: 2,
-  text: "Learn Redux"
-});
-console.log("Current state: ", store.getState());
 console.log("--------------------------------------");
 
 /* TESTS FOR TODOS APP */
@@ -256,13 +230,21 @@ class TodoApp extends Component {
   render() {
     return (
       <div>
+        <input
+          ref={node => {
+            this.input = node;
+          }}
+        />
         <button
           onClick={() => {
             store.dispatch({
               type: "ADD_TODO",
-              text: "Test",
+              text: this.input.value,
               id: nextTodoId++
             });
+            this.input.value = "";
+            console.log("Current state: ", store.getState());
+            console.log("--------------------------------------");
           }}
         >
           Add Todo
