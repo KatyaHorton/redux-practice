@@ -1,6 +1,6 @@
-import React from "react";
+import React, { Component } from "react";
 import ReactDOM from "react-dom";
-import { createStore } from "redux";
+import { createStore, combineReducers } from "redux";
 import "./index.css";
 import expect from "expect";
 import deepFreeze from "deep-freeze";
@@ -117,40 +117,46 @@ const visibilityFilter = (state = "SHOW_ALL", action) => {
 
 /* Reducer composition pattern */
 
-const todoApp = (state = {}, action) => {
-  return {
-    todos: todos(state.todos, action),
-    visibilityFilter: visibilityFilter(state.visibilityFilter, action)
-  };
-};
+console.log(combineReducers);
 
-const storeTodo = createStore(todoApp);
+const todoApp = combineReducers({
+  todos: todos,
+  visibilityFilter: visibilityFilter
+});
+// const todoApp = (state = {}, action) => {
+//   return {
+//     todos: todos(state.todos, action),
+//     visibilityFilter: visibilityFilter(state.visibilityFilter, action)
+//   };
+// };
 
-console.log("Initial state: ", storeTodo.getState());
+const store = createStore(todoApp);
+
+console.log("Initial state: ", store.getState());
 console.log("--------------------------------------");
 console.log("Dispatching ADD_TODO.");
-storeTodo.dispatch({
+store.dispatch({
   type: "ADD_TODO",
   id: 0,
   text: "Learn Redux"
 });
-console.log("Current state: ", storeTodo.getState());
+console.log("Current state: ", store.getState());
 console.log("--------------------------------------");
 console.log("Dispatching ADD_TODO.");
-storeTodo.dispatch({
+store.dispatch({
   type: "ADD_TODO",
   id: 1,
   text: "Learn Redux"
 });
-console.log("Current state: ", storeTodo.getState());
+console.log("Current state: ", store.getState());
 console.log("--------------------------------------");
 console.log("Dispatching ADD_TODO.");
-storeTodo.dispatch({
+store.dispatch({
   type: "ADD_TODO",
   id: 2,
   text: "Learn Redux"
 });
-console.log("Current state: ", storeTodo.getState());
+console.log("Current state: ", store.getState());
 console.log("--------------------------------------");
 
 /* TESTS FOR TODOS APP */
@@ -244,31 +250,36 @@ testRemoveCounter();
 testIncrementCounter();
 console.log("All tests passed");
 
-const store = createStore(counter);
+let nextTodoId = 0;
 
-const Counter = ({ value, onIncrement, onDecrement }) => (
-  <div>
-    <h1>{value}</h1>
-    <button onClick={onIncrement}>+</button>
-    <button onClick={onDecrement}>-</button>
-  </div>
-);
+class TodoApp extends Component {
+  render() {
+    return (
+      <div>
+        <button
+          onClick={() => {
+            store.dispatch({
+              type: "ADD_TODO",
+              text: "Test",
+              id: nextTodoId++
+            });
+          }}
+        >
+          Add Todo
+        </button>
+        <ul>
+          {this.props.todos.map(todo => (
+            <li key={todo.id}>{todo.text}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+}
 
 const render = () => {
   ReactDOM.render(
-    <Counter
-      value={store.getState()}
-      onIncrement={() =>
-        store.dispatch({
-          type: "INCREMENT"
-        })
-      }
-      onDecrement={() =>
-        store.dispatch({
-          type: "DECREMENT"
-        })
-      }
-    />,
+    <TodoApp todos={store.getState().todos} />,
     document.getElementById("root")
   );
 };
@@ -276,7 +287,6 @@ const render = () => {
 //ReactDOM.render(<App />, document.getElementById("root"));
 
 store.subscribe(render);
-
 render();
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

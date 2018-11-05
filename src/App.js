@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 // var createStore = Redux.createStore;
 // ES6 destructuring syntax: const { createStore } = Redux;
 import { createStore } from "redux";
